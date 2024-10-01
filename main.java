@@ -1,13 +1,11 @@
-class Dollar {
-    private amount;
-    Dollar(int amount) {
-        this.amount= amount;
-    }
-    Dollar times(int multiplier) {
-        return new Dollar(amount * multiplier);
+class Dollar extends Money {
+    private String currency;
+	
+    Dollar(int amount, String currency)  {
+        super(amount, currency);
     }
     Money times(int multiplier)  {
-        return new Dollar(amount * multiplier);
+        return Money.dollar(amount * multiplier);
     }
 }
 
@@ -38,25 +36,28 @@ class Dollar {
     assertEquals(Money.dollar(15), five.times(3));
  }
  
- class Franc {   
-    private int amount;					
-    Franc(int amount) {      
-       this.amount= amount;
-    }					
-    Franc times(int multiplier)  {      
-        return new Franc(amount * multiplier);					
-    }   
-    public boolean equals(Object object) {					
-        Franc franc = (Franc) object;      
-        return amount == franc.amount;					
-    }
+ class Franc extends Money {   
+    private String currency;					
     Money times(int multiplier)  {
-        return new Dollar(amount * multiplier);
+        return Money.dollar(amount * multiplier);
+    }
+    Franc(int amount, String currency) {
+        super(amount, currency);
     }					
+    Money times(int multiplier)  {
+        return Money.franc(amount * multiplier);
+    }
+ }
+
+ public void testCurrency() {
+    assertEquals("USD", Money.dollar(1).currency());
+    assertEquals("CHF", Money.franc(1).currency());
  }
 
  abstract Money  {
     protected int amount;
+
+    protected String currency;
     
     public boolean equals(Object object) {
         Money money = (Money) object;
@@ -69,10 +70,17 @@ class Dollar {
     abstract Money times(int multiplier);
     
     static Money dollar(int amount)  {
-        return new Dollar(amount);
+        return new Dollar(amount, "USD");
     }
      
      static Money franc(int amount) {
-        return new Franc(amount);
+        return new Franc(amount, "CHF");
+    }
+    Money(int amount, String currency) {
+        this.amount = amount;
+        this.currency = currency;
+     }
+    String currency() {
+        return currency;
     } 
 }
